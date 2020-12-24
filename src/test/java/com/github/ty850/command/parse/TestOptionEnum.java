@@ -10,9 +10,12 @@ import lombok.Getter;
  */
 @Getter
 public enum TestOptionEnum implements IOptionEnum {
-    A("a", OptionTypeEnum.BOOLEAN, "哈哈", true),
+    A("a", OptionTypeEnum.BOOLEAN, "哈哈", null),
     B("b", OptionTypeEnum.INTEGER, "哈哈", 23),
     C("c", OptionTypeEnum.STRING, "哈哈", "w"),
+    D("deltaStart", OptionTypeEnum.STRING, "哈哈", "w"),
+    E("deltaStartdeltaStart", OptionTypeEnum.STRING, "哈哈", "w"),
+    F("deltaStadeltaStartdeltaStartrtdeltaStart", OptionTypeEnum.STRING, "哈哈", "w"),
 
     ;
 

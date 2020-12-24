@@ -12,6 +12,21 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="eju-repo" />
+      <option name="name" value="eju nexus" />
+      <option name="url" value="http://maven.eju-inc.com/nexus/content/groups/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="deploySnapshots" />
+      <option name="name" value="deploySnapshots" />
+      <option name="url" value="http://maven.eju-inc.com/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="deployRelease" />
+      <option name="name" value="deployRelease" />
+      <option name="url" value="http://maven.eju-inc.com/nexus/content/repositories/releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />

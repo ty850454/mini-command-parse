@@ -8,10 +8,10 @@ class DefaultParserTest {
     public static void main(String[] args) {
         DefaultParser defaultParser = new DefaultParser();
 
-        CommandLine commandLine = defaultParser.parse(TestOptionEnum.class, "a,b=12,d");
-        System.out.println(commandLine.getBoolean(TestOptionEnum.A));
-        System.out.println(commandLine.getValue(TestOptionEnum.B));
+        CommandLine commandLine = defaultParser.parse(TestOptionEnum.class, "b=12,d");
+        System.out.println(commandLine.getBool(TestOptionEnum.A));
+        System.out.println(commandLine.getValueOpt(TestOptionEnum.B));
         System.out.println(commandLine.hasOption(TestOptionEnum.C));
-        System.out.println(commandLine.getValue(TestOptionEnum.C));
+        System.out.println(commandLine.getValueOpt(TestOptionEnum.C));
     }
 }

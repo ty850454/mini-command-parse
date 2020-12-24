@@ -1,5 +1,7 @@
 package com.github.ty850.command.parse;
 
+import java.util.Optional;
+
 /**
  * @author xy
  */
@@ -14,7 +16,7 @@ public class CommandLine {
         for (IOptionEnum optionEnum : keys) {
             if (optionEnum.getDefaultValue() != null) {
                 if (optionEnum.getDefaultValue().getClass() != optionEnum.getType().getDefaultValueClass()) {
-                    throw new RuntimeException("类型" + optionEnum.getType() + "的默认值类型只能为：" + optionEnum.getType().getDefaultValueClass());
+                    throw new RuntimeException("参数" + optionEnum.getOpt() + "的类型" + optionEnum.getType() + "默认值类型只能为：" + optionEnum.getType().getDefaultValueClass());
                 }
             }
         }
@@ -35,6 +37,9 @@ public class CommandLine {
             case STRING:
                 options.put(optionEnum, value);
                 break;
+            case Long:
+                options.put(optionEnum, Long.valueOf(value));
+                break;
             default:
         }
     }
@@ -50,32 +55,73 @@ public class CommandLine {
         return options.containsKey(optionEnum);
     }
 
-    public Object getValue(IOptionEnum optionEnum) {
+    public Optional<Object> getValueOpt(IOptionEnum optionEnum) {
         Object o = options.get(optionEnum);
         if (o == null) {
             o = optionEnum.getDefaultValue();
         }
-        return o;
+        return Optional.ofNullable(o);
     }
 
-    public boolean getBoolean(IOptionEnum optionEnum) {
-        if (!OptionTypeEnum.BOOLEAN.equals(optionEnum.getType())) {
-            throw new RuntimeException("非boolean类型");
-        }
-        return (Boolean) getValue(optionEnum);
+    private OptionTypeEnum getType(IOptionEnum optionEnum) {
+        OptionTypeEnum type = optionEnum.getType();
+        return type == null ? OptionTypeEnum.STRING : type;
     }
 
-    public int getInteger(IOptionEnum optionEnum) {
-        if (!OptionTypeEnum.INTEGER.equals(optionEnum.getType())) {
-            throw new RuntimeException("非INTEGER类型");
+    public <T> Optional<T> getValueOpt(IOptionEnum optionEnum, Class<T> tClass) {
+        OptionTypeEnum type = getType(optionEnum);
+        if (type.getDefaultValueClass() != tClass) {
+            throw new RuntimeException(optionEnum.getOpt() + "的类型为" + type + "，无法取" + tClass + "类型的值");
         }
-        return (Integer) getValue(optionEnum);
+        // noinspection unchecked
+        return (Optional<T>) getValueOpt(optionEnum);
+    }
+
+    public Optional<Boolean> getBooleanOpt(IOptionEnum optionEnum) {
+        return getValueOpt(optionEnum, Boolean.class);
+    }
+
+    public boolean getBool(IOptionEnum optionEnum) {
+        return getBooleanOpt(optionEnum).orElseThrow(() -> new RuntimeException("返回值为null且未定义默认值"));
+    }
+
+    public boolean getBool(IOptionEnum optionEnum, boolean defaultValue) {
+        return getBooleanOpt(optionEnum).orElse(defaultValue);
+    }
+
+    public Optional<Integer> getIntegerOpt(IOptionEnum optionEnum) {
+        return getValueOpt(optionEnum, Integer.class);
+    }
+
+    public int getInt(IOptionEnum optionEnum) {
+        return getIntegerOpt(optionEnum).orElseThrow(() -> new RuntimeException("返回值为null且未定义默认值"));
+    }
+
+    public int getInt(IOptionEnum optionEnum, int defaultValue) {
+        return getIntegerOpt(optionEnum).orElse(defaultValue);
+    }
+
+    public Optional<Long> getLongOpt(IOptionEnum optionEnum) {
+        return getValueOpt(optionEnum, Long.class);
+    }
+
+    public long getLong(IOptionEnum optionEnum) {
+        return getLongOpt(optionEnum).orElseThrow(() -> new RuntimeException("返回值为null且未定义默认值"));
+    }
+
+    public long getLong(IOptionEnum optionEnum, long defaultValue) {
+        return getLongOpt(optionEnum).orElse(defaultValue);
+    }
+
+    public Optional<String> getStringOpt(IOptionEnum optionEnum) {
+        return getValueOpt(optionEnum, String.class);
     }
 
     public String getString(IOptionEnum optionEnum) {
-        if (!OptionTypeEnum.STRING.equals(optionEnum.getType())) {
-            throw new RuntimeException("非STRING类型");
-        }
-        return (String) getValue(optionEnum);
+        return getStringOpt(optionEnum).orElseThrow(() -> new RuntimeException("返回值为null且未定义默认值"));
+    }
+
+    public String getString(IOptionEnum optionEnum, String defaultValue) {
+        return getStringOpt(optionEnum).orElse(defaultValue);
     }
 }

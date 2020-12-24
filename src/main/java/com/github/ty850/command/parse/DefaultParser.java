@@ -20,7 +20,7 @@ public class DefaultParser implements CommandLineParser {
      * @param <T> class 类型
      * @return 命令行对象
      */
-    public <T extends Enum<?> & IOptionEnum> CommandLine parse(Class<T> enumClass, String commandLine) {
+    public <T extends IOptionEnum> CommandLine parse(Class<T> enumClass, String commandLine) {
         if (!enumClass.isEnum()) {
             throw new RuntimeException("非枚举");
         }
@@ -40,7 +40,7 @@ public class DefaultParser implements CommandLineParser {
         return cmd;
     }
 
-    private <T extends Enum<?> & IOptionEnum> void handleToken(Class<T> enumClass, CommandLine cmd, String command) {
+    private <T extends IOptionEnum> void handleToken(Class<T> enumClass, CommandLine cmd, String command) {
         if (StringUtils.isBlank(command)) {
             return;
         }

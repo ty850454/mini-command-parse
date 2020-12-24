@@ -61,6 +61,9 @@ public class IEnumMap<K extends IEnum, V> implements Map<K, V> {
     }
 
     public IEnumMap(Class<? extends K> keyType) {
+        if (!keyType.isEnum()) {
+            throw new RuntimeException("请确保" + keyType + "是个Enum");
+        }
         this.keyType = keyType;
         keys = keyType.getEnumConstants();
         values = new Object[keys.length];
