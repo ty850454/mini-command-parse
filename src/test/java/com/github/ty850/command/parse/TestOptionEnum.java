@@ -1,6 +1,8 @@
-package com.github.ty850454.command.parse;
+package com.github.ty850.command.parse;
 
 
+import com.github.ty850.command.parse.IOptionEnum;
+import com.github.ty850.command.parse.OptionTypeEnum;
 import lombok.Getter;
 
 /**

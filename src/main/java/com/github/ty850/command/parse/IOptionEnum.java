@@ -1,4 +1,4 @@
-package com.github.ty850454.command.parse;
+package com.github.ty850.command.parse;
 
 
 /**
