@@ -7,15 +7,15 @@ import lombok.Getter;
  */
 @Getter
 public enum OptionTypeEnum {
-    BOOLEAN(Boolean.FALSE),
-    INTEGER(0),
-    STRING(""),
+    BOOLEAN(Boolean.class),
+    INTEGER(Integer.class),
+    STRING(String.class),
 
     ;
 
-    private final Object defaultValue;
+    private final Class<?> defaultValueClass;
 
-    OptionTypeEnum(Object defaultValue) {
-        this.defaultValue = defaultValue;
+    OptionTypeEnum(Class<?> defaultValueClass) {
+        this.defaultValueClass = defaultValueClass;
     }
 }

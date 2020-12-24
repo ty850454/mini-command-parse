@@ -1,29 +1,21 @@
 package com.github.ty850454.command.parse;
 
-
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author xy
  */
 public class CommandLine {
 
-    public static final Integer ZERO_INTEGER = 0;
-    public static final String ZERO_STRING = "";
-
     public final IEnumMap<IOptionEnum, Object> options;
 
     public <T extends IOptionEnum> CommandLine(Class<T> enumClass) {
         options = new IEnumMap<>(enumClass);
+        IOptionEnum[] keys = options.keys();
 
-        Set<Map.Entry<IOptionEnum, Object>> entries = options.entrySet();
-        for (Map.Entry<IOptionEnum, Object> entry : entries) {
-            IOptionEnum key = entry.getKey();
-            if (key.getDefaultValue() == null) {
-                entry.setValue(key.getType().getDefaultValue());
-            }else {
-                entry.setValue(key.getDefaultValue());
+        for (IOptionEnum optionEnum : keys) {
+            if (optionEnum.getDefaultValue() != null) {
+                if (optionEnum.getDefaultValue().getClass() != optionEnum.getType().getDefaultValueClass()) {
+                    throw new RuntimeException("类型" + optionEnum.getType() + "的默认值类型只能为：" + optionEnum.getType().getDefaultValueClass());
+                }
             }
         }
     }
@@ -58,11 +50,32 @@ public class CommandLine {
         return options.containsKey(optionEnum);
     }
 
-    public Object getOptionValue(IOptionEnum optionEnum) {
-        return options.get(optionEnum);
+    public Object getValue(IOptionEnum optionEnum) {
+        Object o = options.get(optionEnum);
+        if (o == null) {
+            o = optionEnum.getDefaultValue();
+        }
+        return o;
     }
 
-    // public boolean getBoolean(IOptionEnum optionEnum) {
-    //     return options.get(optionEnum);
-    // }
+    public boolean getBoolean(IOptionEnum optionEnum) {
+        if (!OptionTypeEnum.BOOLEAN.equals(optionEnum.getType())) {
+            throw new RuntimeException("非boolean类型");
+        }
+        return (Boolean) getValue(optionEnum);
+    }
+
+    public int getInteger(IOptionEnum optionEnum) {
+        if (!OptionTypeEnum.INTEGER.equals(optionEnum.getType())) {
+            throw new RuntimeException("非INTEGER类型");
+        }
+        return (Integer) getValue(optionEnum);
+    }
+
+    public String getString(IOptionEnum optionEnum) {
+        if (!OptionTypeEnum.STRING.equals(optionEnum.getType())) {
+            throw new RuntimeException("非STRING类型");
+        }
+        return (String) getValue(optionEnum);
+    }
 }

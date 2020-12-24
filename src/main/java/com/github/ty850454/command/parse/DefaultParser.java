@@ -1,56 +1,60 @@
 package com.github.ty850454.command.parse;
 
 
+import java.util.Optional;
+
 /**
+ * 默认命令参数解析器
+ *
+ * 逗号分隔，a,b=1,c=aa
+ *
  * @author xy
  */
-public class DefaultParser<T extends Enum<?> & IOptionEnum> implements CommandLineParser {
+public class DefaultParser implements CommandLineParser {
 
-    private final Class<T> enumClass;
-
-    public DefaultParser(Class<T> enumClass) {
+    /**
+     * 解析
+     *
+     * @param enumClass 命令定义枚举class
+     * @param commandLine 参数文本
+     * @param <T> class 类型
+     * @return 命令行对象
+     */
+    public <T extends Enum<?> & IOptionEnum> CommandLine parse(Class<T> enumClass, String commandLine) {
         if (!enumClass.isEnum()) {
             throw new RuntimeException("非枚举");
         }
-        this.enumClass = enumClass;
-    }
-
-    public CommandLine parse(String commandLine) {
         if (StringUtils.isBlank(commandLine)) {
             return CommandLine.empty();
         }
-        String[] commands = commandLine.split(" ");
+        String[] commands = commandLine.split(",");
         if (commands.length == 0) {
             return CommandLine.empty();
         }
 
         CommandLine cmd = new CommandLine(enumClass);
         for (String command : commands) {
-            handleToken(cmd, command);
+            handleToken(enumClass, cmd, command);
         }
-
-        checkRequiredArgs(cmd);
 
         return cmd;
     }
 
-    private void handleToken(CommandLine cmd, String command) {
+    private <T extends Enum<?> & IOptionEnum> void handleToken(Class<T> enumClass, CommandLine cmd, String command) {
         if (StringUtils.isBlank(command)) {
             return;
         }
 
         int index = command.indexOf('=');
         if (index == -1) {
-            cmd.addOptionTrue(EnumUtil.byOpt(enumClass, command).orElseThrow(() -> new RuntimeException("选项" + command + "不存在")));
+            Optional<T> t = EnumUtil.byOpt(enumClass, command);
+            t.ifPresent(cmd::addOptionTrue);
             return;
         }
         String key = command.substring(0, index);
-        cmd.addOption(EnumUtil.byOpt(enumClass, key).orElseThrow(() -> new RuntimeException("选项" + key + "不存在")), command.substring(index + 1));
+        Optional<T> t = EnumUtil.byOpt(enumClass, key);
+        t.ifPresent(value -> cmd.addOption(value, command.substring(index + 1)));
     }
 
-    private void checkRequiredArgs(CommandLine cmd) {
-
-
-    }
 
 }

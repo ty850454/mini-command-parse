@@ -57,6 +57,10 @@ public class IEnumMap<K extends IEnum, V> implements Map<K, V> {
         }
     };
 
+    public K[] keys() {
+        return keys;
+    }
+
     public IEnumMap(Class<? extends K> keyType) {
         this.keyType = keyType;
         keys = keyType.getEnumConstants();
@@ -167,13 +171,91 @@ public class IEnumMap<K extends IEnum, V> implements Map<K, V> {
         }
     }
 
+    @Override
     public void clear() {
         Arrays.fill(values, null);
         size = 0;
     }
 
+    private transient Set<K> keySet;
+
+    @Override
     public Set<K> keySet() {
-        return null;
+        Set<K> ks = keySet;
+        if (ks == null) {
+            ks = new KeySet();
+            keySet = ks;
+        }
+        return ks;
+    }
+
+    private class KeySet extends AbstractSet<K> {
+        @Override
+        public Iterator<K> iterator() {
+            return new KeyIterator();
+        }
+        @Override
+        public int size() {
+            return size;
+        }
+        @Override
+        public boolean contains(Object o) {
+            return containsKey(o);
+        }
+        @Override
+        public boolean remove(Object o) {
+            int oldSize = size;
+            IEnumMap.this.remove(o);
+            return size != oldSize;
+        }
+        @Override
+        public void clear() {
+            IEnumMap.this.clear();
+        }
+    }
+
+    private class KeyIterator extends BaseEnumMapIterator<K> {
+        @Override
+        public K next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            lastReturnedIndex = index++;
+            return keys[lastReturnedIndex];
+        }
+    }
+
+    private abstract class BaseEnumMapIterator<T> implements Iterator<T> {
+        // Lower bound on index of next element to return
+        int index = 0;
+
+        // Index of last returned element, or -1 if none
+        int lastReturnedIndex = -1;
+
+        @Override
+        public boolean hasNext() {
+            while (index < values.length && values[index] == null) {
+                index++;
+            }
+            return index != values.length;
+        }
+
+        @Override
+        public void remove() {
+            checkLastReturnedIndex();
+
+            if (values[lastReturnedIndex] != null) {
+                values[lastReturnedIndex] = null;
+                size--;
+            }
+            lastReturnedIndex = -1;
+        }
+
+        private void checkLastReturnedIndex() {
+            if (lastReturnedIndex < 0) {
+                throw new IllegalStateException();
+            }
+        }
     }
 
     public Collection<V> values() {

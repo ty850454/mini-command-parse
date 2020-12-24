@@ -6,10 +6,12 @@ package com.github.ty850454.command.parse;
 class DefaultParserTest {
 
     public static void main(String[] args) {
-        System.out.println(TestOptionEnum.A.name());
-        DefaultParser defaultParser = new DefaultParser(TestOptionEnum.class);
+        DefaultParser defaultParser = new DefaultParser();
 
-        System.out.println(defaultParser.parse("a b=12"));
-
+        CommandLine commandLine = defaultParser.parse(TestOptionEnum.class, "a,b=12,d");
+        System.out.println(commandLine.getBoolean(TestOptionEnum.A));
+        System.out.println(commandLine.getValue(TestOptionEnum.B));
+        System.out.println(commandLine.hasOption(TestOptionEnum.C));
+        System.out.println(commandLine.getValue(TestOptionEnum.C));
     }
 }
