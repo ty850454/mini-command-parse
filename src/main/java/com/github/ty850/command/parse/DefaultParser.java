@@ -32,7 +32,7 @@ public class DefaultParser implements CommandLineParser {
             return CommandLine.empty();
         }
 
-        CommandLine cmd = new CommandLine(enumClass);
+        DefaultCommandLine cmd = new DefaultCommandLine(enumClass);
         for (String command : commands) {
             handleToken(enumClass, cmd, command);
         }
@@ -40,7 +40,7 @@ public class DefaultParser implements CommandLineParser {
         return cmd;
     }
 
-    private <T extends IOptionEnum> void handleToken(Class<T> enumClass, CommandLine cmd, String command) {
+    private <T extends IOptionEnum> void handleToken(Class<T> enumClass, DefaultCommandLine cmd, String command) {
         if (StringUtils.isBlank(command)) {
             return;
         }
