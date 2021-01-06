@@ -14,7 +14,7 @@ public class EmptyCommandLine implements CommandLine {
 
     @Override
     public Optional<Object> getValueOpt(IOptionEnum optionEnum) {
-        return Optional.empty();
+        return Optional.ofNullable(optionEnum.getDefaultValue());
     }
 
 }

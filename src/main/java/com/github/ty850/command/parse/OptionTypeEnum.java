@@ -10,7 +10,7 @@ public enum OptionTypeEnum {
     BOOLEAN(Boolean.class, "布尔"),
     INTEGER(Integer.class, "整数"),
     STRING(String.class, "文本"),
-    Long(Long.class, "长整数"),
+    LONG(Long.class, "长整数"),
 
     ;
 
